@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Trending Clothes</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #f0f2f5; padding: 15px; }
+        .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
+        h2 { text-align: center; color: #1e293b; margin-bottom: 15px; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #475569; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; }
+        button { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        button:hover { background: #1d4ed8; }
+        .msg { margin-top: 15px; padding: 10px; border-radius: 6px; display: none; text-align: center; }
+        .success { background: #dcfce7; color: #166534; }
+        
+        /* Login Box Styles */
+        #loginBox { display: block; }
+        #adminContent { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 🔒 Password Login Screen -->
+    <div class="card" id="loginBox">
+        <h2>🔒 Admin Access</h2>
+        <label>Password Daalein:</label>
+        <input type="password" id="adminPass" placeholder="Enter password">
+        <button onclick="checkPassword()">Login</button>
+        <p id="errorMsg" style="color: red; font-size: 13px; text-align: center; margin-top: 10px; display: none;">Sahi password daalein!</p>
+    </div>
+
+    <!-- 🛠️ Main Admin Panel -->
+    <div class="card" id="adminContent">
+        <h2>🛠️ Admin Panel</h2>
+        <form id="clothForm">
+            <label>Shahar / Location</label>
+            <select id="location" required>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Churchgate">Churchgate</option>
+                <option value="Palghar">Palghar</option>
+                <option value="Nallasopara">Nallasopara</option>
+                <option value="Vasai">Vasai</option>
+                <option value="Boisar">Boisar</option>
+                <option value="Dahanu">Dahanu</option>
+                <option value="Pune">Pune</option>
+            </select>
+
+            <label>Kapde Ka Naam</label>
+            <input type="text" id="name" placeholder="E.g. Oversized Graphic Tee" required>
+
+            <label>Category</label>
+            <select id="category">
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="kids">Kids</option>
+            </select>
+
+            <label>Avg Rate ₹</label>
+            <input type="number" id="price" placeholder="450" required>
+
+            <label>Market Ka Naam</label>
+            <input type="text" id="market" placeholder="E.g. Station Market / Fashion Street" required>
+
+            <label>Image URL Link</label>
+            <input type="url" id="image" placeholder="https://..." required>
+
+            <button type="submit">Data Jodein</button>
+        </form>
+
+        <div id="statusMsg" class="msg success">Data successfully jod diya gaya!</div>
+    </div>
+
+    <script>
+        // 🔑 Aapka Admin Password (Aap ise badal bhi sakte ho)
+        const SECRET_PASS = "viraj123";
+
+        function checkPassword() {
+            const inputPass = document.getElementById('adminPass').value;
+            if (inputPass === SECRET_PASS) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        document.getElementById('clothForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newCloth = {
+                location: document.getElementById('location').value,
+                name: document.getElementById('name').value,
+                category: document.getElementById('category').value,
+                price: document.getElementById('price').value,
+                market: document.getElementById('market').value,
+                image: document.getElementById('image').value,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            let existingData = JSON.parse(localStorage.getItem('trendingClothes')) || [];
+            existingData.push(newCloth);
+            localStorage.setItem('trendingClothes', JSON.stringify(existingData));
+
+            const msg = document.getElementById('statusMsg');
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+
+            document.getElementById('clothForm').reset();
+        });
+    </script>
+</body>
+</html>
+                  
